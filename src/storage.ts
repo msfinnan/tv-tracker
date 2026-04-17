@@ -9,6 +9,7 @@ const DEFAULTS: Platform[] = [
   { id: 'disney', name: 'Disney+', shows: [] },
   { id: 'apple', name: 'Apple TV+', shows: [] },
   { id: 'prime', name: 'Prime Video', shows: [] },
+  { id: 'peacock', name: 'Peacock', shows: [] },
 ]
 
 export function loadPlatforms(): Platform[] {

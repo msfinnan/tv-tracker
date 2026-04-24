@@ -8,13 +8,14 @@ interface Props {
   onAddShow: (platformId: string, show: Omit<Show, 'id' | 'addedAt'>) => void
   onStatusChange: (platformId: string, showId: string, status: WatchStatus) => void
   onPriorityChange: (platformId: string, showId: string, priority: number) => void
+  onUpdateShow: (platformId: string, showId: string, patch: Partial<Show>) => void
   onDeleteShow: (platformId: string, showId: string) => void
 }
 
 type SortKey = 'priority' | 'title' | 'added'
 type FilterStatus = 'all' | WatchStatus
 
-export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange, onDeleteShow }: Props) {
+export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange, onUpdateShow, onDeleteShow }: Props) {
   const [adding, setAdding] = useState(false)
   const [sort, setSort] = useState<SortKey>('priority')
   const [filter, setFilter] = useState<FilterStatus>('all')
@@ -67,6 +68,7 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
           show={show}
           onStatusChange={(id, status) => onStatusChange(platform.id, id, status)}
           onPriorityChange={(id, priority) => onPriorityChange(platform.id, id, priority)}
+          onUpdateShow={(id, patch) => onUpdateShow(platform.id, id, patch)}
           onDelete={id => onDeleteShow(platform.id, id)}
         />
       ))}

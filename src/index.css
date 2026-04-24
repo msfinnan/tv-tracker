@@ -144,20 +144,145 @@ button { cursor: pointer; font-size: 13px; border-radius: 6px; border: none; tra
   padding: 10px 14px;
   margin-bottom: 8px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  flex-direction: column;
+  gap: 0;
   transition: border-color 0.15s;
 }
 .show-card:hover { border-color: var(--accent); }
 .show-card.status-watched { opacity: 0.55; }
 .show-card.status-watching { border-left: 3px solid var(--yellow); }
 
+.show-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .show-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.show-title-row { display: flex; align-items: center; gap: 6px; min-width: 0; }
 .show-title { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .show-notes { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .show-controls { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+.expand-btn {
+  background: transparent;
+  color: var(--muted);
+  padding: 2px 4px;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.expand-btn.expanded { transform: rotate(90deg); }
+.expand-btn:hover { color: var(--accent); }
+
+.episode-progress {
+  font-size: 11px;
+  color: var(--green);
+  background: rgba(76, 175, 125, 0.12);
+  border-radius: 10px;
+  padding: 1px 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.episode-tracker {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.season-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.season-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  padding: 4px 0;
+}
+
+.season-episodes {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 8px;
+}
+
+.episode-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 0;
+}
+
+.episode-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--green);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.episode-number {
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 28px;
+  flex-shrink: 0;
+}
+
+.episode-title-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+  flex: 1;
+  min-width: 0;
+}
+.episode-title-input:focus { outline: 2px solid var(--accent); }
+
+.add-episode-row {
+  padding-left: 24px;
+}
+
+.add-season-btn, .add-episode-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+.add-season-btn:hover, .add-episode-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.season-count-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 13px;
+  width: 56px;
+}
+.season-count-input:focus { outline: 2px solid var(--accent); }
 
 .priority-select {
   background: var(--surface2);

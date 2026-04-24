@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import type { Show } from '../types'
+import type { Show, Season } from '../types'
+
+function uid() {
+  return Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
 
 interface Props {
   onAdd: (show: Omit<Show, 'id' | 'addedAt'>) => void
@@ -10,14 +14,33 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
   const [title, setTitle] = useState('')
   const [priority, setPriority] = useState(3)
   const [notes, setNotes] = useState('')
+  const [seasonCount, setSeasonCount] = useState('')
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) return
-    onAdd({ title: title.trim(), priority, status: 'unwatched', notes: notes.trim() || undefined })
+
+    const numSeasons = parseInt(seasonCount, 10)
+    let seasons: Season[] | undefined
+    if (numSeasons > 0) {
+      seasons = Array.from({ length: numSeasons }, (_, i) => ({
+        id: uid(),
+        number: i + 1,
+        episodes: [],
+      }))
+    }
+
+    onAdd({
+      title: title.trim(),
+      priority,
+      status: 'unwatched',
+      notes: notes.trim() || undefined,
+      seasons,
+    })
     setTitle('')
     setPriority(3)
     setNotes('')
+    setSeasonCount('')
   }
 
   return (
@@ -39,6 +62,18 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
             <option value={4}>4 — Low</option>
             <option value={5}>5 — Someday</option>
           </select>
+        </label>
+        <label>
+          Seasons
+          <input
+            type="number"
+            className="season-count-input"
+            min={0}
+            max={99}
+            placeholder="0"
+            value={seasonCount}
+            onChange={e => setSeasonCount(e.target.value)}
+          />
         </label>
       </div>
       <input

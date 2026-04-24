@@ -3,6 +3,8 @@ import type { Platform, Show, WatchStatus } from './types'
 import { loadPlatforms, savePlatforms } from './storage'
 import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
+import { SearchBar } from './components/SearchBar'
+import { SearchResults } from './components/SearchResults'
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
@@ -11,6 +13,7 @@ function uid() {
 export default function App() {
   const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
   const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     savePlatforms(platforms)
@@ -63,23 +66,38 @@ export default function App() {
       <header className="app-header">
         <h1>📺 TV Tracker</h1>
       </header>
+      <SearchBar value={searchQuery} onChange={setSearchQuery} onClear={() => setSearchQuery('')} />
       <PlatformTabs
         platforms={platforms}
         active={activeId}
         onSelect={setActiveId}
         onAddPlatform={addPlatform}
       />
-      {activePlatform && (
+      {searchQuery.trim() ? (
         <main className="app-main">
-          <ShowList
-            platform={activePlatform}
-            onAddShow={addShow}
+          <SearchResults
+            platforms={platforms}
+            query={searchQuery.trim()}
             onStatusChange={(pid, sid, status) => updateShow(pid, sid, { status })}
             onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
             onUpdateShow={updateShow}
             onDeleteShow={deleteShow}
+            onGoToPlatform={(pid) => { setSearchQuery(''); setActiveId(pid) }}
           />
         </main>
+      ) : (
+        activePlatform && (
+          <main className="app-main">
+            <ShowList
+              platform={activePlatform}
+              onAddShow={addShow}
+              onStatusChange={(pid, sid, status) => updateShow(pid, sid, { status })}
+              onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
+              onUpdateShow={updateShow}
+              onDeleteShow={deleteShow}
+            />
+          </main>
+        )
       )}
     </div>
   )

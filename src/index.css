@@ -190,3 +190,58 @@ button { cursor: pointer; font-size: 13px; border-radius: 6px; border: none; tra
 .delete-btn:hover { color: var(--red); }
 
 .empty { color: var(--muted); padding: 24px 0; text-align: center; }
+
+
+/* Edit mode styles */
+.show-card.editing {
+  border-color: var(--accent);
+  padding: 12px 14px;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.edit-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  width: 100%;
+}
+.edit-input:focus { outline: 2px solid var(--accent); }
+.edit-input.edit-notes { font-size: 12px; }
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 14px;
+  font-weight: 600;
+}
+.save-btn:hover { background: var(--accent-hover); }
+
+.cancel-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+}
+.cancel-btn:hover { color: var(--text); border-color: var(--accent); }
+
+.edit-btn {
+  background: transparent;
+  color: var(--muted);
+  padding: 4px 8px;
+  font-size: 14px;
+}
+.edit-btn:hover { color: var(--accent); }

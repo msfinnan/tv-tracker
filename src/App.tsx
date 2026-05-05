@@ -3,6 +3,7 @@ import type { Platform, Show, WatchStatus } from './types'
 import { loadPlatforms, savePlatforms } from './storage'
 import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
+import { ImportExport } from './components/ImportExport'
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
@@ -58,10 +59,15 @@ export default function App() {
     setActiveId(id)
   }
 
+  function importPlatforms(imported: Platform[]) {
+    setPlatforms(imported)
+  }
+
   return (
     <div className="app">
       <header className="app-header">
         <h1>📺 TV Tracker</h1>
+        <ImportExport platforms={platforms} onImport={importPlatforms} />
       </header>
       <PlatformTabs
         platforms={platforms}

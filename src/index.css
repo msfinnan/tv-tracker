@@ -28,6 +28,9 @@ body {
 .app-header {
   padding: 24px 0 16px;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .app-header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
 
@@ -190,3 +193,90 @@ button { cursor: pointer; font-size: 13px; border-radius: 6px; border: none; tra
 .delete-btn:hover { color: var(--red); }
 
 .empty { color: var(--muted); padding: 24px 0; text-align: center; }
+
+
+/* Import/Export */
+.import-export {
+  position: relative;
+}
+
+.import-export-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-export,
+.btn-import {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-weight: 500;
+}
+.btn-export:hover,
+.btn-import:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.import-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.import-mode-select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 6px;
+  padding: 6px 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.import-mode-select:focus {
+  outline: 2px solid var(--accent);
+}
+
+.import-export-message {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.import-export-message.success {
+  border-color: var(--green);
+  color: var(--green);
+}
+.import-export-message.error {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.dismiss-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+.dismiss-btn:hover {
+  opacity: 1;
+}

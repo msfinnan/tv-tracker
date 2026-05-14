@@ -283,3 +283,59 @@ button { cursor: pointer; font-size: 13px; border-radius: 6px; border: none; tra
 .dismiss-btn:hover {
   opacity: 1;
 }
+
+
+/* Inline Edit Mode */
+.edit-btn {
+  background: transparent;
+  color: var(--muted);
+  padding: 4px 8px;
+  font-size: 14px;
+}
+.edit-btn:hover { color: var(--accent); }
+
+.show-card-editing {
+  border-color: var(--accent);
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.edit-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  width: 100%;
+}
+.edit-input:focus { outline: 2px solid var(--accent); }
+.edit-input-notes { font-size: 12px; }
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-save-btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 5px 14px;
+  font-weight: 600;
+  font-size: 12px;
+}
+.edit-save-btn:hover { background: var(--accent-hover); }
+
+.edit-cancel-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 14px;
+  font-size: 12px;
+}
+.edit-cancel-btn:hover { color: var(--text); border-color: var(--accent); }

@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react'
 import type { Show, WatchStatus } from '../types'
 
 interface Props {
@@ -5,6 +6,7 @@ interface Props {
   onStatusChange: (id: string, status: WatchStatus) => void
   onPriorityChange: (id: string, priority: number) => void
   onDelete: (id: string) => void
+  onEdit: (id: string, patch: { title: string; notes?: string }) => void
 }
 
 const STATUS_LABELS: Record<WatchStatus, string> = {
@@ -19,7 +21,66 @@ const STATUS_CYCLE: Record<WatchStatus, WatchStatus> = {
   watched: 'unwatched',
 }
 
-export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete }: Props) {
+export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit }: Props) {
+  const [editing, setEditing] = useState(false)
+  const [editTitle, setEditTitle] = useState(show.title)
+  const [editNotes, setEditNotes] = useState(show.notes ?? '')
+  const titleRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (editing) titleRef.current?.focus()
+  }, [editing])
+
+  function startEdit() {
+    setEditTitle(show.title)
+    setEditNotes(show.notes ?? '')
+    setEditing(true)
+  }
+
+  function saveEdit() {
+    const trimmed = editTitle.trim()
+    if (!trimmed) return
+    onEdit(show.id, { title: trimmed, notes: editNotes.trim() || undefined })
+    setEditing(false)
+  }
+
+  function cancelEdit() {
+    setEditing(false)
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') saveEdit()
+    if (e.key === 'Escape') cancelEdit()
+  }
+
+  if (editing) {
+    return (
+      <div className="show-card show-card-editing">
+        <div className="edit-form">
+          <input
+            ref={titleRef}
+            className="edit-input"
+            value={editTitle}
+            onChange={e => setEditTitle(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Show title"
+          />
+          <input
+            className="edit-input edit-input-notes"
+            value={editNotes}
+            onChange={e => setEditNotes(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Notes (optional)"
+          />
+          <div className="edit-actions">
+            <button className="edit-save-btn" onClick={saveEdit}>Save</button>
+            <button className="edit-cancel-btn" onClick={cancelEdit}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={`show-card status-${show.status}`}>
       <div className="show-main">
@@ -27,6 +88,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete }: P
         {show.notes && <span className="show-notes">{show.notes}</span>}
       </div>
       <div className="show-controls">
+        <button className="edit-btn" onClick={startEdit} title="Edit">✎</button>
         <select
           className="priority-select"
           value={show.priority}

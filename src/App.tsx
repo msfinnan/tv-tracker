@@ -83,6 +83,7 @@ export default function App() {
             onStatusChange={(pid, sid, status) => updateShow(pid, sid, { status })}
             onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
             onDeleteShow={deleteShow}
+            onEditShow={(pid, sid, patch) => updateShow(pid, sid, patch)}
           />
         </main>
       )}

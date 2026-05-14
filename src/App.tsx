@@ -4,6 +4,7 @@ import { loadPlatforms, savePlatforms } from './storage'
 import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
 import { ImportExport } from './components/ImportExport'
+import { StatsDashboard } from './components/StatsDashboard'
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
@@ -75,6 +76,7 @@ export default function App() {
         onSelect={setActiveId}
         onAddPlatform={addPlatform}
       />
+      <StatsDashboard platforms={platforms} />
       {activePlatform && (
         <main className="app-main">
           <ShowList

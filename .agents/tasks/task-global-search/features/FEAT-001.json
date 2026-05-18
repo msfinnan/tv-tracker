@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "feat",
   "description": "Add a global search bar that filters shows across all platforms. When the user types in the search bar, the app should display matching shows from all platforms (not just the active tab), with each result showing which platform it belongs to. When the search is cleared, the app returns to the normal tab-based view.",
-  "status": "blocked",
+  "status": "completed",
   "steps": [
     "Create a new component src/components/GlobalSearch.tsx that renders a search input field. It should accept props: searchQuery (string), onSearchChange (callback). Style it to fit in the app header area or just below it, using the existing dark theme CSS variables.",
     "Create a new component src/components/SearchResults.tsx that displays search results grouped by or annotated with platform name. It should accept props: platforms (Platform[]), query (string), and the same action handlers as ShowList (onStatusChange, onPriorityChange, onDeleteShow, onEditShow). Filter all shows across all platforms by case-insensitive title/notes match against the query. Reuse the existing ShowCard component to render each result, with the platform name shown as a label/badge above or beside each card.",
@@ -26,5 +26,5 @@
     "retryable": false,
     "detail": "Implementation is complete and committed. Cannot run verification (npx tsc --noEmit, npx vite build) because npm install fails - registry.npmjs.org is blocked by proxy (403 Forbidden). The sandbox is in INTEGRATIONS_ONLY network mode. Code was carefully written to match existing TypeScript types and component patterns."
   },
-  "findings": "Implementation committed successfully. Verification blocked by network restrictions (npm registry inaccessible). Code follows existing patterns exactly: GlobalSearch.tsx is a controlled input component, SearchResults.tsx reuses ShowCard with matching prop signatures, App.tsx adds conditional rendering based on searchQuery state."
+  "findings": "Implementation committed successfully. Verification blocked by network restrictions (npm registry inaccessible). Code follows existing patterns exactly: GlobalSearch.tsx is a controlled input component, SearchResults.tsx reuses ShowCard with matching prop signatures, App.tsx adds conditional rendering based on searchQuery state. Post-review fix: changed React key in SearchResults from show.id to composite key ${platform.id}-${show.id} to prevent duplicate key collisions across platforms."
 }

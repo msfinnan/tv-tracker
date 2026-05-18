@@ -34,7 +34,7 @@ export function SearchResults({ platforms, query, onStatusChange, onPriorityChan
     <div className="search-results">
       <p className="search-results-count">{results.length} result{results.length !== 1 ? 's' : ''} found</p>
       {results.map(({ show, platform }) => (
-        <div key={show.id} className="search-result-item">
+        <div key={`${platform.id}-${show.id}`} className="search-result-item">
           <span className="search-result-platform-label">{platform.name}</span>
           <ShowCard
             show={show}

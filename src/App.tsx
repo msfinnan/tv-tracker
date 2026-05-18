@@ -5,6 +5,8 @@ import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
 import { ImportExport } from './components/ImportExport'
 import { StatsDashboard } from './components/StatsDashboard'
+import { GlobalSearch } from './components/GlobalSearch'
+import { SearchResults } from './components/SearchResults'
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
@@ -13,6 +15,7 @@ function uid() {
 export default function App() {
   const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
   const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     savePlatforms(platforms)
@@ -70,24 +73,40 @@ export default function App() {
         <h1>📺 TV Tracker</h1>
         <ImportExport platforms={platforms} onImport={importPlatforms} />
       </header>
-      <PlatformTabs
-        platforms={platforms}
-        active={activeId}
-        onSelect={setActiveId}
-        onAddPlatform={addPlatform}
-      />
-      <StatsDashboard platforms={platforms} />
-      {activePlatform && (
+      <GlobalSearch searchQuery={searchQuery} onSearchChange={setSearchQuery} />
+      {searchQuery ? (
         <main className="app-main">
-          <ShowList
-            platform={activePlatform}
-            onAddShow={addShow}
+          <SearchResults
+            platforms={platforms}
+            query={searchQuery}
             onStatusChange={(pid, sid, status) => updateShow(pid, sid, { status })}
             onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
             onDeleteShow={deleteShow}
             onEditShow={(pid, sid, patch) => updateShow(pid, sid, patch)}
           />
         </main>
+      ) : (
+        <>
+          <PlatformTabs
+            platforms={platforms}
+            active={activeId}
+            onSelect={setActiveId}
+            onAddPlatform={addPlatform}
+          />
+          <StatsDashboard platforms={platforms} />
+          {activePlatform && (
+            <main className="app-main">
+              <ShowList
+                platform={activePlatform}
+                onAddShow={addShow}
+                onStatusChange={(pid, sid, status) => updateShow(pid, sid, { status })}
+                onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
+                onDeleteShow={deleteShow}
+                onEditShow={(pid, sid, patch) => updateShow(pid, sid, patch)}
+              />
+            </main>
+          )}
+        </>
       )}
     </div>
   )

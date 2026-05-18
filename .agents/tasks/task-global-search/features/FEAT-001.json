@@ -1,0 +1,27 @@
+{
+  "id": "FEAT-001",
+  "type": "feat",
+  "description": "Add a global search bar that filters shows across all platforms. When the user types in the search bar, the app should display matching shows from all platforms (not just the active tab), with each result showing which platform it belongs to. When the search is cleared, the app returns to the normal tab-based view.",
+  "status": "in_progress",
+  "steps": [
+    "Create a new component src/components/GlobalSearch.tsx that renders a search input field. It should accept props: searchQuery (string), onSearchChange (callback). Style it to fit in the app header area or just below it, using the existing dark theme CSS variables.",
+    "Create a new component src/components/SearchResults.tsx that displays search results grouped by or annotated with platform name. It should accept props: platforms (Platform[]), query (string), and the same action handlers as ShowList (onStatusChange, onPriorityChange, onDeleteShow, onEditShow). Filter all shows across all platforms by case-insensitive title/notes match against the query. Reuse the existing ShowCard component to render each result, with the platform name shown as a label/badge above or beside each card.",
+    "In src/App.tsx, add a searchQuery state (useState<string>('')). Render the GlobalSearch component in the header area (after the title, before or near ImportExport). Conditionally render: if searchQuery is non-empty, show SearchResults instead of the normal PlatformTabs + ShowList view. When searchQuery is empty, show the existing platform-tabs-based UI as before.",
+    "Add CSS styles in src/index.css for the global search input (.global-search class) and search results container (.search-results, .search-result-platform-label). The search input should be prominent, full-width or near-full-width, with a search icon or placeholder text like 'Search all shows...'. Style the platform label badge to be a small muted tag showing which service the show is on."
+  ],
+  "acceptance_criteria": [
+    "A search input is visible in the app UI",
+    "Typing in the search input filters shows across ALL platforms by title (case-insensitive)",
+    "Search results display the platform name for each show so the user knows which service it's on",
+    "Clearing the search input returns to the normal tab-based view",
+    "The search also matches against show notes (not just title)",
+    "TypeScript compiles without errors (npx tsc --noEmit passes)",
+    "Vite build succeeds (npx vite build passes)"
+  ],
+  "verification": [
+    "cd /projects/sandbox/tv-tracker && npx tsc --noEmit",
+    "cd /projects/sandbox/tv-tracker && npx vite build"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

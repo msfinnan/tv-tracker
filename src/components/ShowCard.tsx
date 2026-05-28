@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from 'react'
 import type { Show, WatchStatus } from '../types'
+import { TagPicker } from './TagPicker'
 
 interface Props {
   show: Show
   onStatusChange: (id: string, status: WatchStatus) => void
   onPriorityChange: (id: string, priority: number) => void
   onDelete: (id: string) => void
-  onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
+  onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number; tags?: string[] }) => void
   onEpisodeChange: (id: string, season: number | undefined, episode: number | undefined) => void
 }
 
@@ -35,6 +36,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
   const [editNotes, setEditNotes] = useState(show.notes ?? '')
   const [editSeason, setEditSeason] = useState(show.season?.toString() ?? '')
   const [editEpisode, setEditEpisode] = useState(show.episode?.toString() ?? '')
+  const [editTags, setEditTags] = useState<string[]>(show.tags ?? [])
   const titleRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -46,6 +48,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
     setEditNotes(show.notes ?? '')
     setEditSeason(show.season?.toString() ?? '')
     setEditEpisode(show.episode?.toString() ?? '')
+    setEditTags(show.tags ?? [])
     setEditing(true)
   }
 
@@ -57,6 +60,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
       notes: editNotes.trim() || undefined,
       season: editSeason ? Number(editSeason) : undefined,
       episode: editEpisode ? Number(editEpisode) : undefined,
+      tags: editTags.length > 0 ? editTags : undefined,
     })
     setEditing(false)
   }
@@ -113,6 +117,10 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
               />
             </label>
           </div>
+          <div className="form-section">
+            <span className="form-section-label">Genres</span>
+            <TagPicker selected={editTags} onChange={setEditTags} />
+          </div>
           <input
             className="edit-input edit-input-notes"
             value={editNotes}
@@ -138,6 +146,13 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
           <span className="show-title">{show.title}</span>
           {progress && <span className="show-progress">{progress}</span>}
         </div>
+        {show.tags && show.tags.length > 0 && (
+          <div className="show-tags">
+            {show.tags.map(tag => (
+              <span key={tag} className="tag-badge">{tag}</span>
+            ))}
+          </div>
+        )}
         {show.notes && <span className="show-notes">{show.notes}</span>}
       </div>
       <div className="show-controls">

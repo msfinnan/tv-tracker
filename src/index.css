@@ -519,3 +519,61 @@ button { cursor: pointer; font-size: 13px; border-radius: 6px; border: none; tra
   width: 56px !important;
   text-align: center;
 }
+
+
+
+/* Tags */
+.tag-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tag-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.tag-chip.tag-selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 500;
+}
+
+.show-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.tag-badge {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 8px;
+  background: rgba(124, 106, 247, 0.12);
+  color: var(--accent);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-section-label {
+  font-size: 13px;
+  color: var(--muted);
+}

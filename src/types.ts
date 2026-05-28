@@ -6,6 +6,8 @@ export interface Show {
   priority: number // 1 = highest
   status: WatchStatus
   notes?: string
+  season?: number
+  episode?: number
   addedAt: number
 }
 

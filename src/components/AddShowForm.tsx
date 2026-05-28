@@ -10,14 +10,25 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
   const [title, setTitle] = useState('')
   const [priority, setPriority] = useState(3)
   const [notes, setNotes] = useState('')
+  const [season, setSeason] = useState('')
+  const [episode, setEpisode] = useState('')
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title.trim()) return
-    onAdd({ title: title.trim(), priority, status: 'unwatched', notes: notes.trim() || undefined })
+    onAdd({
+      title: title.trim(),
+      priority,
+      status: 'unwatched',
+      notes: notes.trim() || undefined,
+      season: season ? Number(season) : undefined,
+      episode: episode ? Number(episode) : undefined,
+    })
     setTitle('')
     setPriority(3)
     setNotes('')
+    setSeason('')
+    setEpisode('')
   }
 
   return (
@@ -39,6 +50,30 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
             <option value={4}>4 — Low</option>
             <option value={5}>5 — Someday</option>
           </select>
+        </label>
+      </div>
+      <div className="form-row">
+        <label>
+          Season
+          <input
+            type="number"
+            min={1}
+            className="episode-input"
+            placeholder="S"
+            value={season}
+            onChange={e => setSeason(e.target.value)}
+          />
+        </label>
+        <label>
+          Episode
+          <input
+            type="number"
+            min={1}
+            className="episode-input"
+            placeholder="E"
+            value={episode}
+            onChange={e => setEpisode(e.target.value)}
+          />
         </label>
       </div>
       <input

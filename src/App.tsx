@@ -86,6 +86,7 @@ export default function App() {
             onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
             onDeleteShow={deleteShow}
             onEditShow={(pid, sid, patch) => updateShow(pid, sid, patch)}
+            onEpisodeChange={(pid, sid, season, episode) => updateShow(pid, sid, { season, episode })}
           />
         </main>
       )}

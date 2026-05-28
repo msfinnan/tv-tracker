@@ -6,7 +6,8 @@ interface Props {
   onStatusChange: (id: string, status: WatchStatus) => void
   onPriorityChange: (id: string, priority: number) => void
   onDelete: (id: string) => void
-  onEdit: (id: string, patch: { title: string; notes?: string }) => void
+  onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
+  onEpisodeChange: (id: string, season: number | undefined, episode: number | undefined) => void
 }
 
 const STATUS_LABELS: Record<WatchStatus, string> = {
@@ -21,10 +22,19 @@ const STATUS_CYCLE: Record<WatchStatus, WatchStatus> = {
   watched: 'unwatched',
 }
 
-export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit }: Props) {
+function formatProgress(season?: number, episode?: number): string | null {
+  if (!season && !episode) return null
+  const s = season ? `S${season}` : ''
+  const e = episode ? `E${episode}` : ''
+  return `${s}${s && e ? ' ' : ''}${e}`
+}
+
+export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit, onEpisodeChange }: Props) {
   const [editing, setEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(show.title)
   const [editNotes, setEditNotes] = useState(show.notes ?? '')
+  const [editSeason, setEditSeason] = useState(show.season?.toString() ?? '')
+  const [editEpisode, setEditEpisode] = useState(show.episode?.toString() ?? '')
   const titleRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -34,13 +44,20 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
   function startEdit() {
     setEditTitle(show.title)
     setEditNotes(show.notes ?? '')
+    setEditSeason(show.season?.toString() ?? '')
+    setEditEpisode(show.episode?.toString() ?? '')
     setEditing(true)
   }
 
   function saveEdit() {
     const trimmed = editTitle.trim()
     if (!trimmed) return
-    onEdit(show.id, { title: trimmed, notes: editNotes.trim() || undefined })
+    onEdit(show.id, {
+      title: trimmed,
+      notes: editNotes.trim() || undefined,
+      season: editSeason ? Number(editSeason) : undefined,
+      episode: editEpisode ? Number(editEpisode) : undefined,
+    })
     setEditing(false)
   }
 
@@ -51,6 +68,11 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'Enter') saveEdit()
     if (e.key === 'Escape') cancelEdit()
+  }
+
+  function incrementEpisode() {
+    const newEp = (show.episode ?? 0) + 1
+    onEpisodeChange(show.id, show.season || 1, newEp)
   }
 
   if (editing) {
@@ -65,6 +87,32 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
             onKeyDown={handleKeyDown}
             placeholder="Show title"
           />
+          <div className="form-row">
+            <label>
+              Season
+              <input
+                type="number"
+                min={1}
+                className="edit-input episode-input"
+                value={editSeason}
+                onChange={e => setEditSeason(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="S"
+              />
+            </label>
+            <label>
+              Episode
+              <input
+                type="number"
+                min={1}
+                className="edit-input episode-input"
+                value={editEpisode}
+                onChange={e => setEditEpisode(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="E"
+              />
+            </label>
+          </div>
           <input
             className="edit-input edit-input-notes"
             value={editNotes}
@@ -81,13 +129,23 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
     )
   }
 
+  const progress = formatProgress(show.season, show.episode)
+
   return (
     <div className={`show-card status-${show.status}`}>
       <div className="show-main">
-        <span className="show-title">{show.title}</span>
+        <div className="show-title-row">
+          <span className="show-title">{show.title}</span>
+          {progress && <span className="show-progress">{progress}</span>}
+        </div>
         {show.notes && <span className="show-notes">{show.notes}</span>}
       </div>
       <div className="show-controls">
+        {show.status === 'watching' && (
+          <button className="next-ep-btn" onClick={incrementEpisode} title="Next episode">
+            +1 Ep
+          </button>
+        )}
         <button className="edit-btn" onClick={startEdit} title="Edit">✎</button>
         <select
           className="priority-select"

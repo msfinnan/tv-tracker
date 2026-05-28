@@ -10,13 +10,14 @@ interface Props {
   onStatusChange: (platformId: string, showId: string, status: WatchStatus) => void
   onPriorityChange: (platformId: string, showId: string, priority: number) => void
   onDeleteShow: (platformId: string, showId: string) => void
-  onEditShow: (platformId: string, showId: string, patch: { title: string; notes?: string }) => void
+  onEditShow: (platformId: string, showId: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
+  onEpisodeChange: (platformId: string, showId: string, season: number | undefined, episode: number | undefined) => void
 }
 
 type SortKey = 'priority' | 'title' | 'added'
 type FilterStatus = 'all' | WatchStatus
 
-export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange, onDeleteShow, onEditShow }: Props) {
+export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange, onDeleteShow, onEditShow, onEpisodeChange }: Props) {
   const [adding, setAdding] = useState(false)
   const [sort, setSort] = useState<SortKey>('priority')
   const [filter, setFilter] = useState<FilterStatus>('all')
@@ -79,6 +80,7 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
           onPriorityChange={(id, priority) => onPriorityChange(platform.id, id, priority)}
           onDelete={id => onDeleteShow(platform.id, id)}
           onEdit={(id, patch) => onEditShow(platform.id, id, patch)}
+          onEpisodeChange={(id, season, episode) => onEpisodeChange(platform.id, id, season, episode)}
         />
       ))}
     </div>

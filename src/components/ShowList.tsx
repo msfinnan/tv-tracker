@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { Platform, Show, WatchStatus } from '../types'
 import { ShowCard } from './ShowCard'
 import { AddShowForm } from './AddShowForm'
+import { SearchBar } from './SearchBar'
 
 interface Props {
   platform: Platform
@@ -19,8 +20,15 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
   const [adding, setAdding] = useState(false)
   const [sort, setSort] = useState<SortKey>('priority')
   const [filter, setFilter] = useState<FilterStatus>('all')
+  const [search, setSearch] = useState('')
 
-  const filtered = platform.shows.filter(s => filter === 'all' || s.status === filter)
+  const searched = platform.shows.filter(s => {
+    if (!search.trim()) return true
+    const q = search.toLowerCase()
+    return s.title.toLowerCase().includes(q) || (s.notes?.toLowerCase().includes(q) ?? false)
+  })
+
+  const filtered = searched.filter(s => filter === 'all' || s.status === filter)
 
   const sorted = [...filtered].sort((a, b) => {
     if (sort === 'priority') return a.priority - b.priority
@@ -30,6 +38,7 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
 
   return (
     <div className="show-list">
+      <SearchBar value={search} onChange={setSearch} />
       <div className="list-toolbar">
         <div className="toolbar-group">
           <label>Sort
@@ -59,7 +68,7 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
       )}
 
       {sorted.length === 0 && !adding && (
-        <p className="empty">No shows here yet.</p>
+        <p className="empty">{search.trim() ? 'No shows match your search.' : 'No shows here yet.'}</p>
       )}
 
       {sorted.map(show => (

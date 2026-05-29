@@ -1,0 +1,7 @@
+{
+  "task_id": "task-code-quality-improvements",
+  "task_description": "Perform a round of code quality improvements to the TV Tracker app: extract constants and utilities into dedicated modules, reduce component complexity by extracting sub-components, optimize performance hotspots, improve type safety, and fix minor code smells.",
+  "status": "in_progress",
+  "feature_order": ["FEAT-001", "FEAT-002"],
+  "blocked_reason": null
+}

@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-002",
+  "type": "refactor",
+  "description": "Improve component quality: extract ShowCard edit form, optimize StatsDashboard, improve type safety, and add proper error handling",
+  "status": "completed",
+  "steps": [
+    "Extract the editing form in ShowCard.tsx into a new component src/components/ShowCardEditForm.tsx. It should accept props: show (Show), onSave (callback with patch object), onCancel (callback). Move all edit-related state (editTitle, editNotes, editSeason, editEpisode), the titleRef, the useEffect for focus, and the handleKeyDown/saveEdit/cancelEdit logic into this new component. ShowCard.tsx should render <ShowCardEditForm> when editing===true.",
+    "Optimize StatsDashboard.tsx: replace the multiple .filter() calls with a single reduce pass over allShows that accumulates counts for each status in one iteration. Keep the same rendering output.",
+    "Improve type safety in ShowList.tsx: replace the 'as SortKey' and 'as FilterStatus' type assertions on event handler values with a type guard or validation function. Create a helper like isSortKey(value: string): value is SortKey that checks against valid values, and use it in the onChange handler.",
+    "In ImportExport.tsx handleExport function, extract the download-via-anchor pattern into a utility function downloadJson(data: unknown, filename: string) in src/utils.ts for better separation of concerns and testability.",
+    "Add defensive handling in App.tsx: guard activePlatform against the case where platforms array is empty (currently activePlatform could be undefined if platforms is [] because platforms[0] would also be undefined). Add an early return or empty state render when platforms.length === 0.",
+    "In PlatformTabs.tsx, use useCallback for the handleAdd function since it references the onAddPlatform prop. This prevents unnecessary re-renders of the add-platform button.",
+    "Update src/test/ShowCard.test.tsx to add the missing onEpisodeChange mock to the renderCard helper function (currently it is missing, which would cause a runtime error for tests that trigger episode-related actions)"
+  ],
+  "acceptance_criteria": [
+    "src/components/ShowCardEditForm.tsx exists as a self-contained edit form component",
+    "ShowCard.tsx is simplified and delegates to ShowCardEditForm when in editing mode",
+    "StatsDashboard uses a single reduce instead of multiple filter passes",
+    "ShowList.tsx has type-safe parsing of sort/filter select values without unsafe casts",
+    "downloadJson utility exists in src/utils.ts and is used by ImportExport.tsx",
+    "App.tsx handles the empty platforms edge case gracefully",
+    "ShowCard test file includes onEpisodeChange in the mock props"
+  ],
+  "verification": [
+    "Read ShowCard.tsx and confirm it is under 80 lines (significantly reduced from ~140)",
+    "Read StatsDashboard.tsx and confirm only one iteration over allShows for counting",
+    "Read ShowList.tsx and confirm no 'as SortKey' or 'as FilterStatus' type assertions remain",
+    "Read src/utils.ts and confirm downloadJson function exists",
+    "Grep for 'onEpisodeChange' in ShowCard.test.tsx to confirm it is included in mock props"
+  ],
+  "blocked_reason": null,
+  "findings": "All 7 steps implemented successfully. ShowCardEditForm extracted as self-contained component (ShowCard reduced from ~140 to 80 lines). StatsDashboard uses single reduce pass. ShowList type guards replace unsafe casts in event handlers (the includes() call inside the guard still uses a cast for TypeScript array compatibility, which is standard). downloadJson extracted to utils.ts. App.tsx uses lazy initializer for platforms state and early return for empty platforms. PlatformTabs uses useCallback for handleAdd. ShowCard test mock includes onEpisodeChange. No build/test verification possible due to INTEGRATIONS_ONLY network - verified via grep-based consistency checks."
+}

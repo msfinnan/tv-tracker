@@ -1,0 +1,29 @@
+{
+  "project_type": "React SPA with TypeScript and Vite",
+  "language": "TypeScript/TSX",
+  "build_system": "Vite 4 with tsc for type checking",
+  "test_framework": "Vitest with @testing-library/react and userEvent",
+  "build_command": "NODE_OPTIONS='' npx tsc --noEmit (cannot install deps - no node_modules)",
+  "test_command": "NODE_OPTIONS='' node_modules/.bin/vitest run (blocked - no node_modules)",
+  "verification_instructions": "Since INTEGRATIONS_ONLY network blocks npm install, verify changes are syntactically correct by reading the code. Ensure all imports/exports are consistent and no references to removed/renamed symbols remain.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "npm install (blocked by INTEGRATIONS_ONLY network)",
+  "environment_constraints": "INTEGRATIONS_ONLY network - cannot npm install, cannot run tsc or vitest against the project (no node_modules). Global tsc available but missing React/library types. All verification must be done via AST-level code review and grep-based consistency checks.",
+  "contribution_requirements": "No CONTRIBUTING.md found. Standard React/TS conventions.",
+  "key_patterns": "Functional components with Props interfaces. State managed in App.tsx with useState/useEffect. localStorage persistence via storage.ts. Tests use vi.fn() mocks and @testing-library/react render/screen/userEvent patterns.",
+  "relevant_files": [
+    "src/App.tsx",
+    "src/types.ts",
+    "src/storage.ts",
+    "src/components/ShowCard.tsx",
+    "src/components/ShowList.tsx",
+    "src/components/StatsDashboard.tsx",
+    "src/components/ImportExport.tsx",
+    "src/components/AddShowForm.tsx",
+    "src/components/PlatformTabs.tsx",
+    "src/components/SearchBar.tsx",
+    "src/test/ShowCard.test.tsx",
+    "src/test/ShowList.test.tsx"
+  ],
+  "directory_structure": "src/ - main source; src/components/ - React components; src/test/ - test files mirroring component names; root has config (vite.config.ts, tsconfig.json, package.json)"
+}

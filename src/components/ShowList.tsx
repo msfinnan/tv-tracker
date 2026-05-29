@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import type { Platform, Show, WatchStatus } from '../types'
+import type { Platform, WatchStatus, NewShow } from '../types'
 import { ShowCard } from './ShowCard'
 import { AddShowForm } from './AddShowForm'
 import { SearchBar } from './SearchBar'
 
 interface Props {
   platform: Platform
-  onAddShow: (platformId: string, show: Omit<Show, 'id' | 'addedAt'>) => void
+  onAddShow: (platformId: string, show: NewShow) => void
   onStatusChange: (platformId: string, showId: string, status: WatchStatus) => void
   onPriorityChange: (platformId: string, showId: string, priority: number) => void
   onDeleteShow: (platformId: string, showId: string) => void
@@ -17,6 +17,10 @@ interface Props {
 type SortKey = 'priority' | 'title' | 'added'
 type FilterStatus = 'all' | WatchStatus
 
+/**
+ * Displays the list of shows for a platform with search, sort, filter controls
+ * and the ability to add new shows.
+ */
 export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange, onDeleteShow, onEditShow, onEpisodeChange }: Props) {
   const [adding, setAdding] = useState(false)
   const [sort, setSort] = useState<SortKey>('priority')

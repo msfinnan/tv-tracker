@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { Platform, Show, WatchStatus } from '../types'
+import { WATCH_STATUSES } from '../constants'
 
 interface ImportExportProps {
   platforms: Platform[]
@@ -8,8 +9,9 @@ interface ImportExportProps {
 
 type ImportMode = 'replace' | 'merge'
 
-const VALID_STATUSES: WatchStatus[] = ['unwatched', 'watching', 'watched']
-
+/**
+ * Validates that an unknown value matches the Show interface shape.
+ */
 function isValidShow(s: unknown): s is Show {
   if (typeof s !== 'object' || s === null) return false
   const obj = s as Record<string, unknown>
@@ -17,11 +19,14 @@ function isValidShow(s: unknown): s is Show {
     typeof obj.id === 'string' &&
     typeof obj.title === 'string' &&
     typeof obj.priority === 'number' &&
-    VALID_STATUSES.includes(obj.status as WatchStatus) &&
+    WATCH_STATUSES.includes(obj.status as WatchStatus) &&
     typeof obj.addedAt === 'number'
   )
 }
 
+/**
+ * Validates that an unknown value matches the Platform interface shape.
+ */
 function isValidPlatform(p: unknown): p is Platform {
   if (typeof p !== 'object' || p === null) return false
   const obj = p as Record<string, unknown>
@@ -33,12 +38,20 @@ function isValidPlatform(p: unknown): p is Platform {
   )
 }
 
+/**
+ * Validates that the imported data is a valid array of Platform objects.
+ * Returns the validated array or null if invalid.
+ */
 function validateImportData(data: unknown): Platform[] | null {
   if (!Array.isArray(data)) return null
   if (!data.every(isValidPlatform)) return null
   return data as Platform[]
 }
 
+/**
+ * Merges incoming platforms into existing ones. New platforms are appended;
+ * existing platforms gain any shows with non-duplicate IDs.
+ */
 function mergePlatforms(existing: Platform[], incoming: Platform[]): Platform[] {
   const merged = [...existing]
 
@@ -46,10 +59,10 @@ function mergePlatforms(existing: Platform[], incoming: Platform[]): Platform[] 
     const existingIndex = merged.findIndex(p => p.id === incomingPlatform.id)
 
     if (existingIndex === -1) {
-      // New platform — add it
+      // New platform - add it
       merged.push(incomingPlatform)
     } else {
-      // Existing platform — merge shows (skip duplicates by id)
+      // Existing platform - merge shows (skip duplicates by id)
       const existingShows = merged[existingIndex].shows
       const existingShowIds = new Set(existingShows.map(s => s.id))
       const newShows = incomingPlatform.shows.filter(s => !existingShowIds.has(s.id))
@@ -63,19 +76,24 @@ function mergePlatforms(existing: Platform[], incoming: Platform[]): Platform[] 
   return merged
 }
 
+/**
+ * Provides import/export functionality for the watchlist data.
+ * Supports exporting as JSON and importing with merge or replace modes.
+ */
 export function ImportExport({ platforms, onImport }: ImportExportProps) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importMode, setImportMode] = useState<ImportMode>('merge')
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
+  /** Exports platforms data as a downloadable JSON file */
   function handleExport() {
     const json = JSON.stringify(platforms, null, 2)
     const blob = new Blob([json], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `tv-tracker-export-${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
+    const downloadAnchor = document.createElement('a')
+    downloadAnchor.href = url
+    downloadAnchor.download = `tv-tracker-export-${new Date().toISOString().slice(0, 10)}.json`
+    downloadAnchor.click()
     URL.revokeObjectURL(url)
     setMessage({ type: 'success', text: 'Watchlist exported successfully!' })
   }
@@ -89,9 +107,16 @@ export function ImportExport({ platforms, onImport }: ImportExportProps) {
     if (!file) return
 
     const reader = new FileReader()
+
+    reader.onerror = () => {
+      setMessage({ type: 'error', text: 'Failed to read the file. Please try again.' })
+    }
+
     reader.onload = (event) => {
       try {
-        const data = JSON.parse(event.target?.result as string)
+        const content = event.target?.result
+        if (typeof content !== 'string') return
+        const data = JSON.parse(content)
         const validData = validateImportData(data)
 
         if (!validData) {

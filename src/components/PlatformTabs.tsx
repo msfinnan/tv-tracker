@@ -7,8 +7,13 @@ interface Props {
   onAddPlatform: (name: string) => void
 }
 
+/**
+ * Navigation tabs for switching between streaming platforms.
+ * Shows a count badge on each tab and a button to add new platforms.
+ */
 export function PlatformTabs({ platforms, active, onSelect, onAddPlatform }: Props) {
   function handleAdd() {
+    // TODO: Replace window.prompt with a proper modal dialog for better UX
     const name = prompt('Platform name:')?.trim()
     if (name) onAddPlatform(name)
   }

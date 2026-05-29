@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import type { Show, WatchStatus } from '../types'
+import { STATUS_CYCLE, PRIORITY_LABELS } from '../constants'
 
 interface Props {
   show: Show
@@ -7,21 +8,20 @@ interface Props {
   onPriorityChange: (id: string, priority: number) => void
   onDelete: (id: string) => void
   onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
-  onEpisodeChange: (id: string, season: number | undefined, episode: number | undefined) => void
+  onEpisodeChange?: (id: string, season: number | undefined, episode: number | undefined) => void
 }
 
-const STATUS_LABELS: Record<WatchStatus, string> = {
+// Display labels with emoji decoration (component-specific)
+const STATUS_DISPLAY: Record<WatchStatus, string> = {
   unwatched: '⬜ Unwatched',
   watching: '▶️ Watching',
   watched: '✅ Watched',
 }
 
-const STATUS_CYCLE: Record<WatchStatus, WatchStatus> = {
-  unwatched: 'watching',
-  watching: 'watched',
-  watched: 'unwatched',
-}
-
+/**
+ * Formats season and episode numbers into a compact progress string.
+ * Returns null if neither season nor episode is provided.
+ */
 function formatProgress(season?: number, episode?: number): string | null {
   if (!season && !episode) return null
   const s = season ? `S${season}` : ''
@@ -29,6 +29,10 @@ function formatProgress(season?: number, episode?: number): string | null {
   return `${s}${s && e ? ' ' : ''}${e}`
 }
 
+/**
+ * Displays a single show with its status, priority, progress, and controls
+ * for editing, deleting, and cycling through statuses.
+ */
 export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit, onEpisodeChange }: Props) {
   const [editing, setEditing] = useState(false)
   const [editTitle, setEditTitle] = useState(show.title)
@@ -72,7 +76,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
 
   function incrementEpisode() {
     const newEp = (show.episode ?? 0) + 1
-    onEpisodeChange(show.id, show.season || 1, newEp)
+    onEpisodeChange?.(show.id, show.season || 1, newEp)
   }
 
   if (editing) {
@@ -146,27 +150,25 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
             +1 Ep
           </button>
         )}
-        <button className="edit-btn" onClick={startEdit} title="Edit">✎</button>
+        <button className="edit-btn" onClick={startEdit} title="Edit" aria-label="Edit show">✎</button>
         <select
           className="priority-select"
           value={show.priority}
           title="Priority"
           onChange={e => onPriorityChange(show.id, Number(e.target.value))}
         >
-          <option value={1}>P1</option>
-          <option value={2}>P2</option>
-          <option value={3}>P3</option>
-          <option value={4}>P4</option>
-          <option value={5}>P5</option>
+          {Object.keys(PRIORITY_LABELS).map(key => (
+            <option key={key} value={key}>{`P${key}`}</option>
+          ))}
         </select>
         <button
           className={`status-btn status-${show.status}`}
           onClick={() => onStatusChange(show.id, STATUS_CYCLE[show.status])}
           title="Cycle status"
         >
-          {STATUS_LABELS[show.status]}
+          {STATUS_DISPLAY[show.status]}
         </button>
-        <button className="delete-btn" onClick={() => onDelete(show.id)} title="Remove">✕</button>
+        <button className="delete-btn" onClick={() => onDelete(show.id)} title="Remove" aria-label="Delete show">✕</button>
       </div>
     </div>
   )

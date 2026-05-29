@@ -2,7 +2,7 @@
   "id": "FEAT-001",
   "type": "refactor",
   "description": "Extract constants, utility functions, and shared types into dedicated modules for better organization and reuse",
-  "status": "in_progress",
+  "status": "completed",
   "steps": [
     "Create src/constants.ts with: (1) WATCH_STATUSES as a const object mapping status keys to their values ('unwatched', 'watching', 'watched'), (2) STATUS_LABELS record mapping WatchStatus to display labels (same ones currently in ShowCard.tsx), (3) STATUS_CYCLE record mapping WatchStatus to next status (same as ShowCard.tsx), (4) PRIORITY_OPTIONS array of {value, label} objects for the 5 priority levels (currently duplicated in AddShowForm.tsx and ShowCard.tsx), (5) DEFAULT_PLATFORMS array (move from storage.ts), (6) STORAGE_KEY constant (move from storage.ts)",
     "Create src/utils.ts with: (1) generateId() function (move uid() from App.tsx, keep same implementation), (2) formatProgress() function (move from ShowCard.tsx)",
@@ -27,5 +27,5 @@
     "Verify all new files have correct TypeScript syntax by reading them"
   ],
   "blocked_reason": null,
-  "findings": ""
+  "findings": "All constants, utils, and shared values extracted successfully. App.tsx initialPlatforms pattern used instead of lazy initializer to avoid double loadPlatforms() call. PRIORITY_OPTIONS labels use em-dash character from original code to maintain backward compatibility with tests. No build/test verification possible due to INTEGRATIONS_ONLY network (no node_modules), verified via grep-based consistency checks."
 }

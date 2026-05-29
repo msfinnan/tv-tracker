@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { Platform, Show, WatchStatus } from './types'
+import type { Platform, Show } from './types'
 import { loadPlatforms, savePlatforms } from './storage'
 import { generateId } from './utils'
 import { PlatformTabs } from './components/PlatformTabs'

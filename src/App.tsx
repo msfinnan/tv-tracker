@@ -7,9 +7,11 @@ import { ShowList } from './components/ShowList'
 import { ImportExport } from './components/ImportExport'
 import { StatsDashboard } from './components/StatsDashboard'
 
+const initialPlatforms = loadPlatforms()
+
 export default function App() {
-  const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
-  const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
+  const [platforms, setPlatforms] = useState<Platform[]>(initialPlatforms)
+  const [activeId, setActiveId] = useState<string>(initialPlatforms[0]?.id ?? '')
 
   useEffect(() => {
     savePlatforms(platforms)

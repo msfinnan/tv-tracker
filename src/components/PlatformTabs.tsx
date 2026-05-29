@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import type { Platform } from '../types'
 
 interface Props {
@@ -9,10 +8,10 @@ interface Props {
 }
 
 export function PlatformTabs({ platforms, active, onSelect, onAddPlatform }: Props) {
-  const handleAdd = useCallback(() => {
+  function handleAdd() {
     const name = prompt('Platform name:')?.trim()
     if (name) onAddPlatform(name)
-  }, [onAddPlatform])
+  }
 
   return (
     <nav className="platform-tabs">

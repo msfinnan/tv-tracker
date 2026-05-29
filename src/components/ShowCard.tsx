@@ -63,7 +63,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
           onChange={e => onPriorityChange(show.id, Number(e.target.value))}
         >
           {PRIORITY_OPTIONS.map(opt => (
-            <option key={opt.value} value={opt.value}>{opt.label}</option>
+            <option key={opt.value} value={opt.value}>{opt.shortLabel}</option>
           ))}
         </select>
         <button

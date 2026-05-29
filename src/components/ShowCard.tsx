@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import type { Show, WatchStatus } from '../types'
+import { STATUS_LABELS, STATUS_CYCLE, PRIORITY_OPTIONS } from '../constants'
+import { formatProgress } from '../utils'
 
 interface Props {
   show: Show
@@ -8,25 +10,6 @@ interface Props {
   onDelete: (id: string) => void
   onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
   onEpisodeChange: (id: string, season: number | undefined, episode: number | undefined) => void
-}
-
-const STATUS_LABELS: Record<WatchStatus, string> = {
-  unwatched: '⬜ Unwatched',
-  watching: '▶️ Watching',
-  watched: '✅ Watched',
-}
-
-const STATUS_CYCLE: Record<WatchStatus, WatchStatus> = {
-  unwatched: 'watching',
-  watching: 'watched',
-  watched: 'unwatched',
-}
-
-function formatProgress(season?: number, episode?: number): string | null {
-  if (!season && !episode) return null
-  const s = season ? `S${season}` : ''
-  const e = episode ? `E${episode}` : ''
-  return `${s}${s && e ? ' ' : ''}${e}`
 }
 
 export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit, onEpisodeChange }: Props) {
@@ -153,11 +136,9 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
           title="Priority"
           onChange={e => onPriorityChange(show.id, Number(e.target.value))}
         >
-          <option value={1}>P1</option>
-          <option value={2}>P2</option>
-          <option value={3}>P3</option>
-          <option value={4}>P4</option>
-          <option value={5}>P5</option>
+          {PRIORITY_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
         </select>
         <button
           className={`status-btn status-${show.status}`}

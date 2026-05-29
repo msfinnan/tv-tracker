@@ -1,0 +1,31 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Extract constants, utility functions, and shared types into dedicated modules for better organization and reuse",
+  "status": "in_progress",
+  "steps": [
+    "Create src/constants.ts with: (1) WATCH_STATUSES as a const object mapping status keys to their values ('unwatched', 'watching', 'watched'), (2) STATUS_LABELS record mapping WatchStatus to display labels (same ones currently in ShowCard.tsx), (3) STATUS_CYCLE record mapping WatchStatus to next status (same as ShowCard.tsx), (4) PRIORITY_OPTIONS array of {value, label} objects for the 5 priority levels (currently duplicated in AddShowForm.tsx and ShowCard.tsx), (5) DEFAULT_PLATFORMS array (move from storage.ts), (6) STORAGE_KEY constant (move from storage.ts)",
+    "Create src/utils.ts with: (1) generateId() function (move uid() from App.tsx, keep same implementation), (2) formatProgress() function (move from ShowCard.tsx)",
+    "Update src/storage.ts to import STORAGE_KEY and DEFAULT_PLATFORMS from src/constants.ts instead of defining them inline",
+    "Update src/App.tsx to import generateId from src/utils.ts instead of the inline uid() function. Also fix the double-call of loadPlatforms() - the activeId initializer should derive from the platforms state initializer, not call loadPlatforms() a second time. Refactor to: const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms); const [activeId, setActiveId] = useState<string>(() => platforms[0]?.id ?? '') -- but since we cannot access platforms in useState initializer, instead use a single initial value: const initialPlatforms = loadPlatforms(); then use it for both useState calls.",
+    "Update src/components/ShowCard.tsx to import STATUS_LABELS, STATUS_CYCLE from src/constants.ts and formatProgress from src/utils.ts instead of defining them locally",
+    "Update src/components/AddShowForm.tsx to import PRIORITY_OPTIONS from src/constants.ts and render priority <option> elements by mapping over PRIORITY_OPTIONS instead of hard-coding them",
+    "Update src/components/ShowCard.tsx priority <select> to use PRIORITY_OPTIONS from constants instead of hard-coded <option> elements"
+  ],
+  "acceptance_criteria": [
+    "src/constants.ts exists with all extracted constants",
+    "src/utils.ts exists with generateId and formatProgress",
+    "No duplicate definitions of STATUS_LABELS, STATUS_CYCLE, or priority option lists across components",
+    "storage.ts imports from constants.ts instead of defining KEY and DEFAULTS locally",
+    "App.tsx calls loadPlatforms() only once during initialization",
+    "All existing imports and exports remain consistent (no broken references)"
+  ],
+  "verification": [
+    "Run grep to confirm no duplicate STATUS_LABELS/STATUS_CYCLE definitions remain in ShowCard.tsx",
+    "Run grep to confirm uid() function no longer exists in App.tsx",
+    "Run grep to confirm STORAGE_KEY is imported in storage.ts",
+    "Verify all new files have correct TypeScript syntax by reading them"
+  ],
+  "blocked_reason": null,
+  "findings": ""
+}

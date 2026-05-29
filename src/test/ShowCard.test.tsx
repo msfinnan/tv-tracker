@@ -20,6 +20,7 @@ function renderCard(overrides: Partial<Show> = {}, handlers = {}) {
     onPriorityChange: vi.fn(),
     onDelete: vi.fn(),
     onEdit: vi.fn(),
+    onEpisodeChange: vi.fn(),
     ...handlers,
   }
   render(<ShowCard {...props} />)

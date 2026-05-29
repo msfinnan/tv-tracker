@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import type { Show, WatchStatus } from '../types'
 import { STATUS_LABELS, STATUS_CYCLE, PRIORITY_OPTIONS } from '../constants'
 import { formatProgress } from '../utils'
+import { ShowCardEditForm } from './ShowCardEditForm'
 
 interface Props {
   show: Show
@@ -14,43 +15,18 @@ interface Props {
 
 export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit, onEpisodeChange }: Props) {
   const [editing, setEditing] = useState(false)
-  const [editTitle, setEditTitle] = useState(show.title)
-  const [editNotes, setEditNotes] = useState(show.notes ?? '')
-  const [editSeason, setEditSeason] = useState(show.season?.toString() ?? '')
-  const [editEpisode, setEditEpisode] = useState(show.episode?.toString() ?? '')
-  const titleRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    if (editing) titleRef.current?.focus()
-  }, [editing])
 
   function startEdit() {
-    setEditTitle(show.title)
-    setEditNotes(show.notes ?? '')
-    setEditSeason(show.season?.toString() ?? '')
-    setEditEpisode(show.episode?.toString() ?? '')
     setEditing(true)
   }
 
-  function saveEdit() {
-    const trimmed = editTitle.trim()
-    if (!trimmed) return
-    onEdit(show.id, {
-      title: trimmed,
-      notes: editNotes.trim() || undefined,
-      season: editSeason ? Number(editSeason) : undefined,
-      episode: editEpisode ? Number(editEpisode) : undefined,
-    })
+  function handleSave(patch: { title: string; notes?: string; season?: number; episode?: number }) {
+    onEdit(show.id, patch)
     setEditing(false)
   }
 
-  function cancelEdit() {
+  function handleCancel() {
     setEditing(false)
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') saveEdit()
-    if (e.key === 'Escape') cancelEdit()
   }
 
   function incrementEpisode() {
@@ -59,57 +35,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
   }
 
   if (editing) {
-    return (
-      <div className="show-card show-card-editing">
-        <div className="edit-form">
-          <input
-            ref={titleRef}
-            className="edit-input"
-            value={editTitle}
-            onChange={e => setEditTitle(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Show title"
-          />
-          <div className="form-row">
-            <label>
-              Season
-              <input
-                type="number"
-                min={1}
-                className="edit-input episode-input"
-                value={editSeason}
-                onChange={e => setEditSeason(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="S"
-              />
-            </label>
-            <label>
-              Episode
-              <input
-                type="number"
-                min={1}
-                className="edit-input episode-input"
-                value={editEpisode}
-                onChange={e => setEditEpisode(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="E"
-              />
-            </label>
-          </div>
-          <input
-            className="edit-input edit-input-notes"
-            value={editNotes}
-            onChange={e => setEditNotes(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Notes (optional)"
-          />
-          <div className="edit-actions">
-            <button className="edit-save-btn" onClick={saveEdit}>Save</button>
-            <button className="edit-cancel-btn" onClick={cancelEdit}>Cancel</button>
-          </div>
-        </div>
-      </div>
-    )
+    return <ShowCardEditForm show={show} onSave={handleSave} onCancel={handleCancel} />
   }
 
   const progress = formatProgress(show.season, show.episode)

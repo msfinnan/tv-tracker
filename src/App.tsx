@@ -8,9 +8,8 @@ import { ImportExport } from './components/ImportExport'
 import { StatsDashboard } from './components/StatsDashboard'
 
 export default function App() {
-  const initialPlatforms = loadPlatforms()
-  const [platforms, setPlatforms] = useState<Platform[]>(initialPlatforms)
-  const [activeId, setActiveId] = useState<string>(initialPlatforms[0]?.id ?? '')
+  const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
+  const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
 
   useEffect(() => {
     savePlatforms(platforms)
@@ -60,6 +59,24 @@ export default function App() {
 
   function importPlatforms(imported: Platform[]) {
     setPlatforms(imported)
+  }
+
+  if (platforms.length === 0) {
+    return (
+      <div className="app">
+        <header className="app-header">
+          <h1>📺 TV Tracker</h1>
+          <ImportExport platforms={platforms} onImport={importPlatforms} />
+        </header>
+        <PlatformTabs
+          platforms={platforms}
+          active={activeId}
+          onSelect={setActiveId}
+          onAddPlatform={addPlatform}
+        />
+        <p className="empty">No platforms yet. Add one to get started!</p>
+      </div>
+    )
   }
 
   return (

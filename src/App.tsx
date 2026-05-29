@@ -5,6 +5,7 @@ import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
 import { ImportExport } from './components/ImportExport'
 import { StatsDashboard } from './components/StatsDashboard'
+import { Randomizer } from './components/Randomizer'
 
 function uid() {
   return Math.random().toString(36).slice(2) + Date.now().toString(36)
@@ -68,7 +69,10 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <h1>📺 TV Tracker</h1>
-        <ImportExport platforms={platforms} onImport={importPlatforms} />
+        <div className="header-actions">
+          <Randomizer platforms={platforms} />
+          <ImportExport platforms={platforms} onImport={importPlatforms} />
+        </div>
       </header>
       <PlatformTabs
         platforms={platforms}

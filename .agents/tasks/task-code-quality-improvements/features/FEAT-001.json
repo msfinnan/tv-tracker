@@ -27,5 +27,5 @@
     "Verify all new files have correct TypeScript syntax by reading them"
   ],
   "blocked_reason": null,
-  "findings": "All constants, utils, and shared values extracted successfully. App.tsx initialPlatforms pattern used instead of lazy initializer to avoid double loadPlatforms() call. PRIORITY_OPTIONS labels use em-dash character from original code to maintain backward compatibility with tests. No build/test verification possible due to INTEGRATIONS_ONLY network (no node_modules), verified via grep-based consistency checks."
+  "findings": "All constants, utils, and shared values extracted successfully. App.tsx initialPlatforms pattern used instead of lazy initializer to avoid double loadPlatforms() call. PRIORITY_OPTIONS labels use em-dash character from original code to maintain backward compatibility with tests. No build/test verification possible due to INTEGRATIONS_ONLY network (no node_modules), verified via grep-based consistency checks. Post-review fix: added shortLabel field to PRIORITY_OPTIONS for compact display in ShowCard, fixed double loadPlatforms() with module-level variable, and added unit tests for utils.ts."
 }

@@ -36,6 +36,3 @@ export interface Platform {
 
 /** Data required to create a new show (without auto-generated fields) */
 export type NewShow = Omit<Show, 'id' | 'addedAt'>
-
-/** Partial update fields allowed when editing a show */
-export type ShowPatch = Partial<Pick<Show, 'title' | 'notes' | 'season' | 'episode' | 'status' | 'priority'>>

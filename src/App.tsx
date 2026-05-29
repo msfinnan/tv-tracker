@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react'
-import type { Platform, Show, NewShow, Priority } from './types'
+import { useState, useEffect } from 'react'
+import type { Platform, Show, NewShow } from './types'
 import { loadPlatforms, savePlatforms } from './storage'
 import { generateId } from './utils'
 import { PlatformTabs } from './components/PlatformTabs'
@@ -22,10 +22,7 @@ export default function App() {
   }, [platforms])
 
   /** The currently selected platform, falling back to the first platform */
-  const activePlatform = useMemo(
-    () => platforms.find(p => p.id === activeId) ?? platforms[0],
-    [platforms, activeId]
-  )
+  const activePlatform = platforms.find(p => p.id === activeId) ?? platforms[0]
 
   function updatePlatforms(fn: (prev: Platform[]) => Platform[]) {
     setPlatforms(prev => fn(prev))
@@ -95,7 +92,7 @@ export default function App() {
             platform={activePlatform}
             onAddShow={addShow}
             onStatusChange={(pid, sid, status) => updateShow(pid, sid, { status })}
-            onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority: priority as Priority })}
+            onPriorityChange={(pid, sid, priority) => updateShow(pid, sid, { priority })}
             onDeleteShow={deleteShow}
             onEditShow={(pid, sid, patch) => updateShow(pid, sid, patch)}
             onEpisodeChange={(pid, sid, season, episode) => updateShow(pid, sid, { season, episode })}

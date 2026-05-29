@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
-import type { Show, WatchStatus } from '../types'
+import type { Show, WatchStatus, Priority } from '../types'
 import { STATUS_CYCLE, PRIORITY_LABELS } from '../constants'
 
 interface Props {
   show: Show
   onStatusChange: (id: string, status: WatchStatus) => void
-  onPriorityChange: (id: string, priority: number) => void
+  onPriorityChange: (id: string, priority: Priority) => void
   onDelete: (id: string) => void
   onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
   onEpisodeChange?: (id: string, season: number | undefined, episode: number | undefined) => void
@@ -155,7 +155,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
           className="priority-select"
           value={show.priority}
           title="Priority"
-          onChange={e => onPriorityChange(show.id, Number(e.target.value))}
+          onChange={e => onPriorityChange(show.id, Number(e.target.value) as Priority)}
         >
           {Object.keys(PRIORITY_LABELS).map(key => (
             <option key={key} value={key}>{`P${key}`}</option>

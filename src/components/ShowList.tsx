@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Platform, WatchStatus, NewShow } from '../types'
+import type { Platform, WatchStatus, NewShow, Priority } from '../types'
 import { ShowCard } from './ShowCard'
 import { AddShowForm } from './AddShowForm'
 import { SearchBar } from './SearchBar'
@@ -8,7 +8,7 @@ interface Props {
   platform: Platform
   onAddShow: (platformId: string, show: NewShow) => void
   onStatusChange: (platformId: string, showId: string, status: WatchStatus) => void
-  onPriorityChange: (platformId: string, showId: string, priority: number) => void
+  onPriorityChange: (platformId: string, showId: string, priority: Priority) => void
   onDeleteShow: (platformId: string, showId: string) => void
   onEditShow: (platformId: string, showId: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
   onEpisodeChange: (platformId: string, showId: string, season: number | undefined, episode: number | undefined) => void

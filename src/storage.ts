@@ -19,12 +19,14 @@ export function loadPlatforms(): Platform[] {
 
 /**
  * Persists the given platforms array to localStorage.
- * Logs a console error if storage quota is exceeded.
+ * Returns true on success, false if storage quota is exceeded or another error occurs.
  */
-export function savePlatforms(platforms: Platform[]): void {
+export function savePlatforms(platforms: Platform[]): boolean {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(platforms))
+    return true
   } catch (error) {
     console.error('Failed to save platforms to localStorage:', error)
+    return false
   }
 }

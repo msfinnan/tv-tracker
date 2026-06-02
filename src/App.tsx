@@ -9,7 +9,7 @@ import { StatsDashboard } from './components/StatsDashboard'
 
 export default function App() {
   const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
-  const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
+  const [activeId, setActiveId] = useState<string>(() => platforms[0]?.id ?? '')
 
   useEffect(() => {
     savePlatforms(platforms)

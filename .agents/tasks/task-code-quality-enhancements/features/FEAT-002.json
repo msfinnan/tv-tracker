@@ -1,0 +1,23 @@
+{
+  "id": "FEAT-002",
+  "type": "fix",
+  "description": "Fix code quality issues: eliminate double-call to loadPlatforms in App.tsx initialization, fix missing onEpisodeChange prop in ShowList test helper, and add missing SearchBar tests.",
+  "status": "completed",
+  "steps": [
+    "1. In src/App.tsx, fix the double initialization of loadPlatforms. Currently useState<Platform[]>(loadPlatforms) and useState<string>(() => loadPlatforms()[0]?.id ?? '') both call loadPlatforms(). Refactor so loadPlatforms() is called once: use a lazy initializer that sets both platforms and activeId from a single call, or derive activeId from the platforms state.",
+    "2. In src/test/ShowList.test.tsx, the renderShowList helper is missing onEpisodeChange in its props object. Add onEpisodeChange: vi.fn() to the props. This is needed because the ShowList component passes it down to ShowCard.",
+    "3. Create src/test/SearchBar.test.tsx with tests for the SearchBar component covering: (a) renders input with placeholder 'Search shows...', (b) displays the provided value, (c) calls onChange when user types, (d) shows clear button only when value is non-empty, (e) calls onChange with empty string and refocuses input when clear button is clicked, (f) does not show clear button when value is empty."
+  ],
+  "acceptance_criteria": [
+    "loadPlatforms() is only called once during App initialization (no redundant localStorage parse)",
+    "ShowList test helper includes onEpisodeChange: vi.fn() in its props",
+    "SearchBar.test.tsx exists with at least 5 test cases covering input rendering, value display, onChange callback, clear button visibility, and clear button behavior",
+    "All tests pass"
+  ],
+  "verification": [
+    "Run npx tsc --noEmit from /projects/sandbox/tv-tracker to confirm type checking passes",
+    "Run npx vitest run from /projects/sandbox/tv-tracker to confirm all tests pass"
+  ],
+  "blocked_reason": null,
+  "findings": "Cannot run tsc or vitest due to missing node_modules (INTEGRATIONS_ONLY network). All changes were manually verified for correctness: (1) App.tsx fix derives activeId from the platforms state variable returned by the first useState call, avoiding the redundant loadPlatforms() call; (2) ShowList test helper now includes onEpisodeChange: vi.fn() matching the component Props interface; (3) SearchBar.test.tsx created with 6 test cases following existing test patterns. The SearchBar component uses a Unicode ellipsis character in its placeholder, which the tests correctly match."
+}

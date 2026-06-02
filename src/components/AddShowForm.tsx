@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Show, Priority } from '../types'
-import { DEFAULT_PRIORITY } from '../constants'
+import { DEFAULT_PRIORITY, PRIORITY_OPTIONS } from '../constants'
 
 interface Props {
   onAdd: (show: Omit<Show, 'id' | 'addedAt'>) => void
@@ -45,11 +45,9 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
         <label>
           Priority
           <select value={priority} onChange={e => setPriority(Number(e.target.value) as Priority)}>
-            <option value={1}>1 — Must watch</option>
-            <option value={2}>2 — High</option>
-            <option value={3}>3 — Medium</option>
-            <option value={4}>4 — Low</option>
-            <option value={5}>5 — Someday</option>
+            {PRIORITY_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
           </select>
         </label>
       </div>

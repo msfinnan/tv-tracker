@@ -9,6 +9,9 @@ export function isValidShow(s: unknown): s is Show {
     typeof obj.id === 'string' &&
     typeof obj.title === 'string' &&
     typeof obj.priority === 'number' &&
+    Number.isInteger(obj.priority) &&
+    obj.priority >= 1 &&
+    obj.priority <= 5 &&
     VALID_STATUSES.includes(obj.status as WatchStatus) &&
     typeof obj.addedAt === 'number'
   )

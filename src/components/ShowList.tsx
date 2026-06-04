@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Platform, Show, WatchStatus } from '../types'
+import { GENRE_TAGS } from '../types'
 import { ShowCard } from './ShowCard'
 import { AddShowForm } from './AddShowForm'
 import { SearchBar } from './SearchBar'
@@ -10,7 +11,7 @@ interface Props {
   onStatusChange: (platformId: string, showId: string, status: WatchStatus) => void
   onPriorityChange: (platformId: string, showId: string, priority: number) => void
   onDeleteShow: (platformId: string, showId: string) => void
-  onEditShow: (platformId: string, showId: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
+  onEditShow: (platformId: string, showId: string, patch: { title: string; notes?: string; season?: number; episode?: number; tags?: string[] }) => void
   onEpisodeChange: (platformId: string, showId: string, season: number | undefined, episode: number | undefined) => void
 }
 
@@ -21,6 +22,7 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
   const [adding, setAdding] = useState(false)
   const [sort, setSort] = useState<SortKey>('priority')
   const [filter, setFilter] = useState<FilterStatus>('all')
+  const [tagFilter, setTagFilter] = useState<string>('all')
   const [search, setSearch] = useState('')
 
   const searched = platform.shows.filter(s => {
@@ -29,7 +31,9 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
     return s.title.toLowerCase().includes(q) || (s.notes?.toLowerCase().includes(q) ?? false)
   })
 
-  const filtered = searched.filter(s => filter === 'all' || s.status === filter)
+  const filtered = searched
+    .filter(s => filter === 'all' || s.status === filter)
+    .filter(s => tagFilter === 'all' || (s.tags?.includes(tagFilter) ?? false))
 
   const sorted = [...filtered].sort((a, b) => {
     if (sort === 'priority') return a.priority - b.priority
@@ -57,6 +61,14 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
               <option value="watched">Watched</option>
             </select>
           </label>
+          <label>Genre
+            <select value={tagFilter} onChange={e => setTagFilter(e.target.value)}>
+              <option value="all">All</option>
+              {GENRE_TAGS.map(tag => (
+                <option key={tag} value={tag}>{tag}</option>
+              ))}
+            </select>
+          </label>
         </div>
         <button className="add-btn" onClick={() => setAdding(true)}>+ Add Show</button>
       </div>
@@ -69,7 +81,7 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
       )}
 
       {sorted.length === 0 && !adding && (
-        <p className="empty">{search.trim() ? 'No shows match your search.' : 'No shows here yet.'}</p>
+        <p className="empty">{search.trim() || tagFilter !== 'all' ? 'No shows match your filters.' : 'No shows here yet.'}</p>
       )}
 
       {sorted.map(show => (

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Show } from '../types'
+import { TagPicker } from './TagPicker'
 
 interface Props {
   onAdd: (show: Omit<Show, 'id' | 'addedAt'>) => void
@@ -12,6 +13,7 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
   const [notes, setNotes] = useState('')
   const [season, setSeason] = useState('')
   const [episode, setEpisode] = useState('')
+  const [tags, setTags] = useState<string[]>([])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -23,12 +25,14 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
       notes: notes.trim() || undefined,
       season: season ? Number(season) : undefined,
       episode: episode ? Number(episode) : undefined,
+      tags: tags.length > 0 ? tags : undefined,
     })
     setTitle('')
     setPriority(3)
     setNotes('')
     setSeason('')
     setEpisode('')
+    setTags([])
   }
 
   return (
@@ -75,6 +79,10 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
             onChange={e => setEpisode(e.target.value)}
           />
         </label>
+      </div>
+      <div className="form-section">
+        <span className="form-section-label">Genres</span>
+        <TagPicker selected={tags} onChange={setTags} />
       </div>
       <input
         placeholder="Notes (optional)"

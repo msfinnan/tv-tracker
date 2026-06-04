@@ -1,5 +1,22 @@
 export type WatchStatus = 'unwatched' | 'watching' | 'watched'
 
+export const GENRE_TAGS = [
+  'Drama',
+  'Comedy',
+  'Sci-Fi',
+  'Fantasy',
+  'Thriller',
+  'Horror',
+  'Action',
+  'Romance',
+  'Documentary',
+  'Animation',
+  'Crime',
+  'Mystery',
+] as const
+
+export type GenreTag = typeof GENRE_TAGS[number]
+
 export interface Show {
   id: string
   title: string
@@ -8,6 +25,7 @@ export interface Show {
   notes?: string
   season?: number
   episode?: number
+  tags?: string[]
   addedAt: number
 }
 

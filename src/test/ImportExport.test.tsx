@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event'
 import { ImportExport } from '../components/ImportExport'
 import type { Platform } from '../types'
 
+declare const global: typeof globalThis
+
 const platforms: Platform[] = [
   {
     id: 'netflix',

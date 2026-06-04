@@ -22,6 +22,7 @@ function renderShowList(platformOverride?: Partial<Platform>) {
     onPriorityChange: vi.fn(),
     onDeleteShow: vi.fn(),
     onEditShow: vi.fn(),
+    onEpisodeChange: vi.fn(),
   }
   render(<ShowList {...props} />)
   return props

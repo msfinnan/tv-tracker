@@ -20,6 +20,7 @@ function renderCard(overrides: Partial<Show> = {}, handlers = {}) {
     onPriorityChange: vi.fn(),
     onDelete: vi.fn(),
     onEdit: vi.fn(),
+    onEpisodeChange: vi.fn(),
     ...handlers,
   }
   render(<ShowCard {...props} />)
@@ -36,7 +37,7 @@ describe('ShowCard', () => {
   it('does not render notes span when notes is undefined', () => {
     renderCard({ notes: undefined })
     expect(screen.getByText('Breaking Bad')).toBeInTheDocument()
-    expect(screen.queryByClassName?.('show-notes')).not.toBeDefined
+    expect(screen.queryByText('Great show')).not.toBeInTheDocument()
   })
 
   it('displays current priority in the select', () => {
@@ -102,6 +103,8 @@ describe('ShowCard', () => {
       expect(props.onEdit).toHaveBeenCalledWith('show-1', {
         title: 'Better Call Saul',
         notes: 'Great show',
+        season: undefined,
+        episode: undefined,
       })
     })
 
@@ -116,6 +119,8 @@ describe('ShowCard', () => {
       expect(props.onEdit).toHaveBeenCalledWith('show-1', {
         title: 'The Wire',
         notes: 'Great show',
+        season: undefined,
+        episode: undefined,
       })
     })
 

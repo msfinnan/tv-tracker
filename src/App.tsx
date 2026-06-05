@@ -1,39 +1,45 @@
 import { useState, useEffect } from 'react'
-import type { Platform, Show, WatchStatus } from './types'
+import type { Platform, Show, NewShow } from './types'
 import { loadPlatforms, savePlatforms } from './storage'
+import { generateId } from './utils'
 import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
 import { ImportExport } from './components/ImportExport'
 import { StatsDashboard } from './components/StatsDashboard'
 
-function uid() {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36)
-}
-
+/**
+ * Root application component that manages platform and show state.
+ * Persists all data to localStorage via the storage module.
+ */
 export default function App() {
   const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
+  // Note: loadPlatforms() is called twice (once for platforms, once for activeId) but is
+  // idempotent and cheap. This preserves consistent behavior with tests.
   const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
 
   useEffect(() => {
     savePlatforms(platforms)
   }, [platforms])
 
+  /** The currently selected platform, falling back to the first platform */
   const activePlatform = platforms.find(p => p.id === activeId) ?? platforms[0]
 
   function updatePlatforms(fn: (prev: Platform[]) => Platform[]) {
     setPlatforms(prev => fn(prev))
   }
 
-  function addShow(platformId: string, show: Omit<Show, 'id' | 'addedAt'>) {
+  /** Adds a new show to the specified platform */
+  function addShow(platformId: string, show: NewShow) {
     updatePlatforms(prev =>
       prev.map(p =>
         p.id === platformId
-          ? { ...p, shows: [...p.shows, { ...show, id: uid(), addedAt: Date.now() }] }
+          ? { ...p, shows: [...p.shows, { ...show, id: generateId(), addedAt: Date.now() }] }
           : p
       )
     )
   }
 
+  /** Updates fields on a specific show */
   function updateShow(platformId: string, showId: string, patch: Partial<Show>) {
     updatePlatforms(prev =>
       prev.map(p =>
@@ -44,6 +50,7 @@ export default function App() {
     )
   }
 
+  /** Removes a show from a platform */
   function deleteShow(platformId: string, showId: string) {
     updatePlatforms(prev =>
       prev.map(p =>
@@ -54,12 +61,14 @@ export default function App() {
     )
   }
 
+  /** Creates a new platform and sets it as active */
   function addPlatform(name: string) {
-    const id = uid()
+    const id = generateId()
     updatePlatforms(prev => [...prev, { id, name, shows: [] }])
     setActiveId(id)
   }
 
+  /** Replaces all platforms with imported data */
   function importPlatforms(imported: Platform[]) {
     setPlatforms(imported)
   }

@@ -5,6 +5,10 @@ interface Props {
   onChange: (value: string) => void
 }
 
+/**
+ * Search input component for filtering shows by title or notes content.
+ * Includes a clear button when the search field has a value.
+ */
 export function SearchBar({ value, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -18,6 +22,7 @@ export function SearchBar({ value, onChange }: Props) {
         placeholder="Search shows…"
         value={value}
         onChange={e => onChange(e.target.value)}
+        aria-label="Search shows"
       />
       {value && (
         <button

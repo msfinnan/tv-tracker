@@ -4,15 +4,23 @@ interface Props {
   platforms: Platform[]
 }
 
+/**
+ * Displays aggregate statistics about tracked shows across all platforms,
+ * including counts by status, completion percentage, and per-platform breakdown.
+ */
 export function StatsDashboard({ platforms }: Props) {
   const allShows = platforms.flatMap(p => p.shows)
   const total = allShows.length
 
   if (total === 0) return null
 
-  const unwatched = allShows.filter(s => s.status === 'unwatched').length
-  const watching = allShows.filter(s => s.status === 'watching').length
-  const watched = allShows.filter(s => s.status === 'watched').length
+  const counts = allShows.reduce((acc, show) => {
+    acc[show.status] = (acc[show.status] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+  const unwatched = counts.unwatched || 0
+  const watching = counts.watching || 0
+  const watched = counts.watched || 0
   const completionPct = Math.round((watched / total) * 100)
 
   // Top platforms by show count (only those with shows)

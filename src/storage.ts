@@ -1,26 +1,15 @@
 import type { Platform } from './types'
-
-const KEY = 'tv-tracker-platforms'
-
-const DEFAULTS: Platform[] = [
-  { id: 'netflix', name: 'Netflix', shows: [] },
-  { id: 'hulu', name: 'Hulu', shows: [] },
-  { id: 'hbo', name: 'HBO Max', shows: [] },
-  { id: 'disney', name: 'Disney+', shows: [] },
-  { id: 'apple', name: 'Apple TV+', shows: [] },
-  { id: 'prime', name: 'Prime Video', shows: [] },
-  { id: 'peacock', name: 'Peacock', shows: [] },
-]
+import { STORAGE_KEY, DEFAULT_PLATFORMS } from './constants'
 
 export function loadPlatforms(): Platform[] {
   try {
-    const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as Platform[]) : DEFAULTS
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return raw ? (JSON.parse(raw) as Platform[]) : DEFAULT_PLATFORMS
   } catch {
-    return DEFAULTS
+    return DEFAULT_PLATFORMS
   }
 }
 
 export function savePlatforms(platforms: Platform[]): void {
-  localStorage.setItem(KEY, JSON.stringify(platforms))
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(platforms))
 }

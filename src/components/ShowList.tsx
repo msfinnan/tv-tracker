@@ -17,11 +17,32 @@ interface Props {
 type SortKey = 'priority' | 'title' | 'added'
 type FilterStatus = 'all' | WatchStatus
 
+const VALID_SORT_KEYS: SortKey[] = ['priority', 'title', 'added']
+const VALID_FILTER_STATUSES: FilterStatus[] = ['all', 'unwatched', 'watching', 'watched']
+
+function isSortKey(value: string): value is SortKey {
+  return VALID_SORT_KEYS.includes(value as SortKey)
+}
+
+function isFilterStatus(value: string): value is FilterStatus {
+  return VALID_FILTER_STATUSES.includes(value as FilterStatus)
+}
+
 export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange, onDeleteShow, onEditShow, onEpisodeChange }: Props) {
   const [adding, setAdding] = useState(false)
   const [sort, setSort] = useState<SortKey>('priority')
   const [filter, setFilter] = useState<FilterStatus>('all')
   const [search, setSearch] = useState('')
+
+  function handleSortChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value
+    if (isSortKey(value)) setSort(value)
+  }
+
+  function handleFilterChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value
+    if (isFilterStatus(value)) setFilter(value)
+  }
 
   const searched = platform.shows.filter(s => {
     if (!search.trim()) return true
@@ -43,14 +64,14 @@ export function ShowList({ platform, onAddShow, onStatusChange, onPriorityChange
       <div className="list-toolbar">
         <div className="toolbar-group">
           <label>Sort
-            <select value={sort} onChange={e => setSort(e.target.value as SortKey)}>
+            <select value={sort} onChange={handleSortChange}>
               <option value="priority">Priority</option>
               <option value="title">Title</option>
               <option value="added">Date Added</option>
             </select>
           </label>
           <label>Filter
-            <select value={filter} onChange={e => setFilter(e.target.value as FilterStatus)}>
+            <select value={filter} onChange={handleFilterChange}>
               <option value="all">All</option>
               <option value="unwatched">Unwatched</option>
               <option value="watching">Watching</option>

@@ -1,4 +1,4 @@
-import type { Platform } from '../types'
+import type { Platform, WatchStatus } from '../types'
 
 interface Props {
   platforms: Platform[]
@@ -10,10 +10,15 @@ export function StatsDashboard({ platforms }: Props) {
 
   if (total === 0) return null
 
-  const unwatched = allShows.filter(s => s.status === 'unwatched').length
-  const watching = allShows.filter(s => s.status === 'watching').length
-  const watched = allShows.filter(s => s.status === 'watched').length
-  const completionPct = Math.round((watched / total) * 100)
+  const counts = allShows.reduce<Record<WatchStatus, number>>(
+    (acc, show) => {
+      acc[show.status]++
+      return acc
+    },
+    { unwatched: 0, watching: 0, watched: 0 }
+  )
+
+  const completionPct = Math.round((counts.watched / total) * 100)
 
   // Top platforms by show count (only those with shows)
   const platformStats = platforms
@@ -29,15 +34,15 @@ export function StatsDashboard({ platforms }: Props) {
           <span className="stat-label">Total Shows</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value stat-unwatched">{unwatched}</span>
+          <span className="stat-value stat-unwatched">{counts.unwatched}</span>
           <span className="stat-label">Unwatched</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value stat-watching">{watching}</span>
+          <span className="stat-value stat-watching">{counts.watching}</span>
           <span className="stat-label">Watching</span>
         </div>
         <div className="stat-card">
-          <span className="stat-value stat-watched">{watched}</span>
+          <span className="stat-value stat-watched">{counts.watched}</span>
           <span className="stat-label">Watched</span>
         </div>
         <div className="stat-card">

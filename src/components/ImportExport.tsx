@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import type { Platform, Show, WatchStatus } from '../types'
+import { downloadJson } from '../utils'
 
 interface ImportExportProps {
   platforms: Platform[]
@@ -69,14 +70,8 @@ export function ImportExport({ platforms, onImport }: ImportExportProps) {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   function handleExport() {
-    const json = JSON.stringify(platforms, null, 2)
-    const blob = new Blob([json], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `tv-tracker-export-${new Date().toISOString().slice(0, 10)}.json`
-    a.click()
-    URL.revokeObjectURL(url)
+    const filename = `tv-tracker-export-${new Date().toISOString().slice(0, 10)}.json`
+    downloadJson(platforms, filename)
     setMessage({ type: 'success', text: 'Watchlist exported successfully!' })
   }
 

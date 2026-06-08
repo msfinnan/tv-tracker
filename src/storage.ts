@@ -1,4 +1,5 @@
 import type { Platform } from './types'
+import { isValidPlatform } from './validation'
 
 const KEY = 'tv-tracker-platforms'
 
@@ -15,7 +16,10 @@ const DEFAULTS: Platform[] = [
 export function loadPlatforms(): Platform[] {
   try {
     const raw = localStorage.getItem(KEY)
-    return raw ? (JSON.parse(raw) as Platform[]) : DEFAULTS
+    if (!raw) return DEFAULTS
+    const parsed: unknown = JSON.parse(raw)
+    if (!Array.isArray(parsed) || !parsed.every(isValidPlatform)) return DEFAULTS
+    return parsed as Platform[]
   } catch {
     return DEFAULTS
   }

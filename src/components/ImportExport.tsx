@@ -1,43 +1,13 @@
 import { useRef, useState } from 'react'
-import type { Platform, Show, WatchStatus } from '../types'
+import type { Platform } from '../types'
+import { validateImportData } from '../validation'
 
-interface ImportExportProps {
+interface Props {
   platforms: Platform[]
   onImport: (platforms: Platform[]) => void
 }
 
 type ImportMode = 'replace' | 'merge'
-
-const VALID_STATUSES: WatchStatus[] = ['unwatched', 'watching', 'watched']
-
-function isValidShow(s: unknown): s is Show {
-  if (typeof s !== 'object' || s === null) return false
-  const obj = s as Record<string, unknown>
-  return (
-    typeof obj.id === 'string' &&
-    typeof obj.title === 'string' &&
-    typeof obj.priority === 'number' &&
-    VALID_STATUSES.includes(obj.status as WatchStatus) &&
-    typeof obj.addedAt === 'number'
-  )
-}
-
-function isValidPlatform(p: unknown): p is Platform {
-  if (typeof p !== 'object' || p === null) return false
-  const obj = p as Record<string, unknown>
-  return (
-    typeof obj.id === 'string' &&
-    typeof obj.name === 'string' &&
-    Array.isArray(obj.shows) &&
-    (obj.shows as unknown[]).every(isValidShow)
-  )
-}
-
-function validateImportData(data: unknown): Platform[] | null {
-  if (!Array.isArray(data)) return null
-  if (!data.every(isValidPlatform)) return null
-  return data as Platform[]
-}
 
 function mergePlatforms(existing: Platform[], incoming: Platform[]): Platform[] {
   const merged = [...existing]
@@ -63,7 +33,7 @@ function mergePlatforms(existing: Platform[], incoming: Platform[]): Platform[] 
   return merged
 }
 
-export function ImportExport({ platforms, onImport }: ImportExportProps) {
+export function ImportExport({ platforms, onImport }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importMode, setImportMode] = useState<ImportMode>('merge')
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)

@@ -1,32 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
-import type { Show, WatchStatus } from '../types'
+import type { Show, WatchStatus, ShowPatch, Priority } from '../types'
+import { STATUS_LABELS, STATUS_CYCLE } from '../constants'
+import { formatProgress } from '../utils'
 
 interface Props {
   show: Show
   onStatusChange: (id: string, status: WatchStatus) => void
-  onPriorityChange: (id: string, priority: number) => void
+  onPriorityChange: (id: string, priority: Priority) => void
   onDelete: (id: string) => void
-  onEdit: (id: string, patch: { title: string; notes?: string; season?: number; episode?: number }) => void
+  onEdit: (id: string, patch: ShowPatch) => void
   onEpisodeChange: (id: string, season: number | undefined, episode: number | undefined) => void
-}
-
-const STATUS_LABELS: Record<WatchStatus, string> = {
-  unwatched: '⬜ Unwatched',
-  watching: '▶️ Watching',
-  watched: '✅ Watched',
-}
-
-const STATUS_CYCLE: Record<WatchStatus, WatchStatus> = {
-  unwatched: 'watching',
-  watching: 'watched',
-  watched: 'unwatched',
-}
-
-function formatProgress(season?: number, episode?: number): string | null {
-  if (!season && !episode) return null
-  const s = season ? `S${season}` : ''
-  const e = episode ? `E${episode}` : ''
-  return `${s}${s && e ? ' ' : ''}${e}`
 }
 
 export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onEdit, onEpisodeChange }: Props) {
@@ -151,7 +134,7 @@ export function ShowCard({ show, onStatusChange, onPriorityChange, onDelete, onE
           className="priority-select"
           value={show.priority}
           title="Priority"
-          onChange={e => onPriorityChange(show.id, Number(e.target.value))}
+          onChange={e => onPriorityChange(show.id, Number(e.target.value) as Priority)}
         >
           <option value={1}>P1</option>
           <option value={2}>P2</option>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import type { Show } from '../types'
+import type { Show, Priority } from '../types'
+import { DEFAULT_PRIORITY, PRIORITY_OPTIONS } from '../constants'
 
 interface Props {
   onAdd: (show: Omit<Show, 'id' | 'addedAt'>) => void
@@ -8,7 +9,7 @@ interface Props {
 
 export function AddShowForm({ onAdd, onCancel }: Props) {
   const [title, setTitle] = useState('')
-  const [priority, setPriority] = useState(3)
+  const [priority, setPriority] = useState(DEFAULT_PRIORITY)
   const [notes, setNotes] = useState('')
   const [season, setSeason] = useState('')
   const [episode, setEpisode] = useState('')
@@ -25,7 +26,7 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
       episode: episode ? Number(episode) : undefined,
     })
     setTitle('')
-    setPriority(3)
+    setPriority(DEFAULT_PRIORITY)
     setNotes('')
     setSeason('')
     setEpisode('')
@@ -43,12 +44,10 @@ export function AddShowForm({ onAdd, onCancel }: Props) {
       <div className="form-row">
         <label>
           Priority
-          <select value={priority} onChange={e => setPriority(Number(e.target.value))}>
-            <option value={1}>1 — Must watch</option>
-            <option value={2}>2 — High</option>
-            <option value={3}>3 — Medium</option>
-            <option value={4}>4 — Low</option>
-            <option value={5}>5 — Someday</option>
+          <select value={priority} onChange={e => setPriority(Number(e.target.value) as Priority)}>
+            {PRIORITY_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
           </select>
         </label>
       </div>

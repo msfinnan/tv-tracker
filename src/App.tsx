@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react'
 import type { Platform, Show, WatchStatus } from './types'
 import { loadPlatforms, savePlatforms } from './storage'
+import { uid } from './utils'
 import { PlatformTabs } from './components/PlatformTabs'
 import { ShowList } from './components/ShowList'
 import { ImportExport } from './components/ImportExport'
 import { StatsDashboard } from './components/StatsDashboard'
 
-function uid() {
-  return Math.random().toString(36).slice(2) + Date.now().toString(36)
-}
-
 export default function App() {
   const [platforms, setPlatforms] = useState<Platform[]>(loadPlatforms)
-  const [activeId, setActiveId] = useState<string>(() => loadPlatforms()[0]?.id ?? '')
+  const [activeId, setActiveId] = useState<string>(() => platforms[0]?.id ?? '')
 
   useEffect(() => {
     savePlatforms(platforms)

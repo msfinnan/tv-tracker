@@ -1,0 +1,33 @@
+{
+  "id": "FEAT-001",
+  "type": "refactor",
+  "description": "Extract shared types, constants, and utility functions into dedicated modules to reduce duplication and improve maintainability.",
+  "status": "completed",
+  "steps": [
+    "1. Create src/constants.ts with: PRIORITY_OPTIONS array (value + label pairs for P1-P5), STATUS_LABELS record (mapping WatchStatus to display strings like the ones in ShowCard.tsx), STATUS_CYCLE record (mapping each WatchStatus to the next), and DEFAULT_PRIORITY = 3.",
+    "2. Create src/utils.ts with: (a) the uid() function currently in App.tsx, (b) the formatProgress() function currently in ShowCard.tsx.",
+    "3. In src/types.ts, add a ShowPatch type: { title: string; notes?: string; season?: number; episode?: number } - this is currently duplicated as inline types in ShowCard.tsx Props and ShowList.tsx Props. Also add a type alias Priority = 1 | 2 | 3 | 4 | 5 and update the Show interface to use it.",
+    "4. Update src/App.tsx to import uid from src/utils.ts instead of defining it inline.",
+    "5. Update src/components/ShowCard.tsx to: (a) import STATUS_LABELS and STATUS_CYCLE from src/constants.ts (removing the local definitions), (b) import formatProgress from src/utils.ts (removing the local definition), (c) import ShowPatch from src/types.ts and use it in the Props interface for onEdit.",
+    "6. Update src/components/ShowList.tsx to import ShowPatch from src/types.ts and use it in the Props interface for onEditShow.",
+    "7. Update src/components/AddShowForm.tsx to import DEFAULT_PRIORITY from src/constants.ts instead of hardcoding 3.",
+    "8. In src/storage.ts, add runtime validation for the parsed JSON data (similar to the validation pattern already used in ImportExport.tsx). Import and reuse the isValidPlatform/isValidShow validators by extracting them from ImportExport.tsx into a new src/validation.ts module. Update ImportExport.tsx to import from src/validation.ts instead of defining them inline.",
+    "9. Rename the Props interface in ImportExport.tsx from ImportExportProps to Props for consistency with all other components that use the name Props."
+  ],
+  "acceptance_criteria": [
+    "No duplicate type definitions for ShowPatch - it exists only in src/types.ts and is imported elsewhere",
+    "uid() is defined only in src/utils.ts and imported by App.tsx",
+    "formatProgress() is defined only in src/utils.ts and imported by ShowCard.tsx",
+    "STATUS_LABELS and STATUS_CYCLE are defined only in src/constants.ts and imported by ShowCard.tsx",
+    "Validation functions (isValidShow, isValidPlatform, validateImportData) live in src/validation.ts and are imported by both storage.ts and ImportExport.tsx",
+    "storage.ts loadPlatforms() validates parsed JSON using the shared validators before returning it, falling back to DEFAULTS on invalid data",
+    "All existing tests continue to pass (no behavioral changes)",
+    "Priority type is a union type 1|2|3|4|5 in types.ts"
+  ],
+  "verification": [
+    "Run npx tsc --noEmit from /projects/sandbox/tv-tracker to confirm type checking passes",
+    "Run npx vitest run from /projects/sandbox/tv-tracker to confirm all tests pass"
+  ],
+  "blocked_reason": null,
+  "findings": "Changed Priority type from number to union type 1|2|3|4|5 in types.ts. This required adding Priority import and 'as Priority' casts in ShowCard.tsx and AddShowForm.tsx where Number(e.target.value) is used. DEFAULT_PRIORITY in constants.ts is explicitly typed as Priority to ensure useState infers the correct type. Cannot run tsc or vitest due to missing node_modules (INTEGRATIONS_ONLY network), but all type relationships were manually verified for correctness."
+}

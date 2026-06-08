@@ -1,0 +1,30 @@
+{
+  "project_type": "React SPA with Vite bundler - TV show watchlist tracker",
+  "language": "TypeScript",
+  "build_system": "Vite 4 with tsc for type checking. Scripts: npm run build (tsc && vite build), npm run dev, npm test (vitest run)",
+  "test_framework": "Vitest with @testing-library/react and @testing-library/user-event. Tests in src/test/ directory, setup file at src/test/setup.ts imports @testing-library/jest-dom",
+  "build_command": "cd /projects/sandbox/tv-tracker && npx tsc --noEmit",
+  "test_command": "cd /projects/sandbox/tv-tracker && npx vitest run",
+  "verification_instructions": "Run npx tsc --noEmit to type-check. Run npx vitest run to execute tests. Both should pass with zero errors.",
+  "snapshot_or_generated_files": null,
+  "setup_instructions": "npm install (requires network). Under INTEGRATIONS_ONLY, use npx with globally available tsc for type checking.",
+  "environment_constraints": "INTEGRATIONS_ONLY network - cannot install npm packages. node_modules does not exist. Must validate changes via AST/code review. Global tsc available for type checking but needs node_modules for React types. Verification is limited to code correctness review.",
+  "contribution_requirements": "No CONTRIBUTING.md found. Follow existing code patterns: functional components, named exports for components, default export for App.",
+  "key_patterns": "Components use named exports in src/components/. Types defined in src/types.ts. Storage layer in src/storage.ts. Tests mirror component names in src/test/. Props interfaces defined inline per component. State management via useState/useEffect in App.tsx with prop-drilling. No external state library.",
+  "relevant_files": [
+    "src/types.ts",
+    "src/storage.ts",
+    "src/App.tsx",
+    "src/components/ShowCard.tsx",
+    "src/components/ShowList.tsx",
+    "src/components/AddShowForm.tsx",
+    "src/components/PlatformTabs.tsx",
+    "src/components/ImportExport.tsx",
+    "src/components/StatsDashboard.tsx",
+    "src/components/SearchBar.tsx",
+    "src/test/ShowCard.test.tsx",
+    "src/test/ShowList.test.tsx",
+    "src/test/App.test.tsx"
+  ],
+  "directory_structure": "src/ - main source. src/components/ - React components. src/test/ - test files. Root has config files (vite.config.ts, tsconfig.json, package.json)."
+}
